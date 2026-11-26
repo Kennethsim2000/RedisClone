@@ -11,8 +11,28 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(CTest)
 
+add_library(redis_clone_core
+    src/storage/store.cpp
+)
+
+target_include_directories(redis_clone_core
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+if(MSVC)
+    target_compile_options(redis_clone_core PRIVATE /W4)
+else()
+    target_compile_options(redis_clone_core PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
 add_executable(redis_clone
     src/main.cpp
+)
+
+target_link_libraries(redis_clone
+    PRIVATE
+        redis_clone_core
 )
 
 if(MSVC)
@@ -36,11 +56,13 @@ if(BUILD_TESTING)
 
     add_executable(redis_clone_tests
         tests/test_main.cpp
+        tests/storage/store_test.cpp
     )
 
     target_link_libraries(redis_clone_tests
         PRIVATE
             GTest::gtest_main
+            redis_clone_core
     )
 
     include(GoogleTest)
