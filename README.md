@@ -57,9 +57,47 @@ Platform-specific event-loop implementations may be added as the project evolves
 - Test edge cases such as partial network reads, malformed requests, expired keys, and interrupted persistence writes.
 - Clearly document where this project intentionally differs from Redis internals and behavior.
 
-## Building
+## Building and testing
 
-Build instructions will be added in Phase 0 once the initial CMake project and source tree are in place.
+### Prerequisites
+
+- CMake 3.16 or newer
+- A C++17-compatible compiler (Apple Clang, Clang, GCC, or MSVC)
+- Internet access on the first configure, so CMake can download GoogleTest through FetchContent
+
+### Configure and build
+
+From the repository root:
+
+```bash
+cmake -S . -B build
+cmake --build build
+```
+
+Run the application:
+
+```bash
+./build/redis_clone
+```
+
+### Run tests
+
+Build the test executable and run all registered tests with CTest:
+
+```bash
+cmake --build build
+ctest --test-dir build --output-on-failure
+```
+
+To configure without building the test target:
+
+```bash
+cmake -S . -B build -DBUILD_TESTING=OFF
+```
+
+## Continuous integration
+
+GitHub Actions runs the CMake build and test suite on every push and pull request targeting any branch. The workflow is defined in [`.github/workflows/ci.yml`](./.github/workflows/ci.yml).
 
 ## Current status
 
